@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card p-4">
+    <h2>{{ course.title }}</h2>
+    <p class="text-muted">Instructor: {{ course.instructor.username }}</p>
+    <p>{{ course.description }}</p>
+    <h5>Price: ৳{{ course.price }}</h5>
+
+    {% if user.is_authenticated %}
+        {% if user == course.instructor %}
+            <a href="{% url 'course_update' course.pk %}" class="btn btn-warning">Edit</a>
+            <a href="{% url 'course_delete' course.pk %}" class="btn btn-danger">Delete</a>
+        {% elif not is_enrolled %}
+            <a href="{% url 'enroll' course.pk %}" class="btn btn-primary">Enroll Now</a>
+        {% else %}
+            <span class="badge badge-success">✔ Enrolled</span>
+        {% endif %}
+    {% endif %}
+
+    <hr>
+    <h4>Lessons</h4>
+    <ul class="list-group">
+        {% for lesson in lessons %}
+            <li class="list-group-item">
+                <strong>{{ lesson.order }}. {{ lesson.title }}</strong>
+                <p class="mb-0 text-muted">{{ lesson.content }}</p>
+            </li>
+        {% empty %}
+            <li class="list-group-item">No lessons yet.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
